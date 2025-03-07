@@ -248,35 +248,3 @@ train_dat <- full_train_set
 save(train_dat, file=file.path(dir_out, paste0("train_set_", study.name, ".rda")))
 write.csv(train_dat, file.path(dir_out, paste0("train_set_", study.name, ".csv")), row.names = FALSE)
 
-
-data.path <- "Output/"
-file_list <- list.files(path = data.path, pattern = "\\.csv$", full.names = TRUE)
-
-results <- list()
-for (file in file_list) {
-  df <- read.csv(file)
-  missing_signatures <- setdiff(sort(selected_signature), sort(colnames(df)))
-  results[[basename(file)]] <- list(
-    num_signature = ncol(df)-1,
-    missing_signatures = paste(missing_signatures, collapse = ",")
-  )
-  results_df <- do.call(rbind, lapply(names(results), function(x) {
-    c(File = x, results[[x]])
-  }))
-  results_df <- as.data.frame(results_df)
-}
-
-results_df <- data.frame(
-  num_signature = as.numeric(unlist(lapply(results, `[[`, "num_signature"))),
-  missing_signatures = sapply(results, function(x) paste(x$missing_signatures, collapse = ", ")),
-  row.names = names(results),
-  stringsAsFactors = FALSE
-)
-
-write.csv(results_df, file.path("Output/", "train_set_summary.csv"), row.names = TRUE)
-
-print(results_df)
-
-
-df <- read.csv("Output/train_set_ICB_Van_Allen__Melanoma__CTLA4.csv")
-missing_signatures <- setdiff(selected_signature, colnames(df))

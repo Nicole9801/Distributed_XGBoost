@@ -105,7 +105,7 @@ evaluation_metrics <- list(
 )
 
 # Using Caret for the best hyper-parameters to get final model
-group <-  ifelse(train_response == "R", 1, 0) 
+group <-  ifelse(train_response == "R", 0, 1) 
 xgb_model <- xgboost(data = as.matrix(train_var),
                      label = group,
                      booster = "gbtree",
