@@ -1,17 +1,41 @@
+# Method Description
+Multivariable model was developed with a distributed pipeline. Eleven datasets, each containing more than 25 patient samples and representing various cancer types including melanoma, lung, gastric, kidney, bladder were selected for analysis.  Distributed model training was conducted using Apache Spark, a cluster computing framework that distributes data across the cluster and enables parallelized operations, and SparkR, an R API for Spark. Independent XGBoost models were trained in parallel for each dataset without data pooling. Hyperparameter tuning for each model was performed using a grid search approach.Hyperparameter tuning for each local model was performed through grid search. *All data from each dataset was used for training due to small sample size*. 
 
-data/: contains 11 original dataset for each study in .rda files 
+A tree-based aggregation approach was used to collect and integrate independently trained XGBoost models into a single global model. The aggregation processes followed a tree-bagging strategy, where individual decision trees from each local model were sequentially merged into the global model without modifying the learned structures, ensuing efficient model integration while maintaining local dataset-specific patterns. 
 
-Training_set/: training set created for each study, including all selected signature scores and response columns, stored in .csv and .rda files
+The global model was then validated on four private dataset. The validation datasets were selected based on their diverse composition including pan-cancer and single cancer samples, to ensure a robust assessment of the global model's predictive capacity across multiple cancer types. Receiver Operating Characteristic (ROC) curve analysis with 95% confidence intervals (CIs) was performed using the ‘pROC’ R package (v1.18.5).
 
-Scripts/: R scripts for 1-creating training set, 2-traing model with distributed ML, and 3-Aggregate models into global model (.py) and 4 - validation of global model. 
+## Directories and Scripts
 
-Local_model/: stores trained xgboost model for each study
+### data/
+contains 11 original dataset for each study in .rda files 
 
-Global_model/: stores aggregated model in different formats
+### Training_set/
+training set created for each study, including all selected signature scores and response columns, stored in .csv and .rda files
 
-common_feature.txt: 53 signatures that are shared among 11 dataset
+### Scripts/
+Code scripts for
 
-selected_signatures.txt:  62 signatures that are most associated with IO responses
+1 - creating training set 
 
-training_set_summary.csv: a summary including sample size (patients with expression and response data), number of selected signatures and number of missing signatures in the training set
+2 - traing model with distributed ML
+
+3 - Aggregate models into global model (.py)
+
+4 - validation of global model. 
+
+### Local_model/
+stores trained xgboost model for each study
+
+### Global_model/
+stores aggregated model in different formats
+
+### common_feature.txt
+53 signatures that are shared among 11 dataset
+
+### selected_signatures.txt
+62 signatures that are most associated with IO responses
+
+### training_set_summary.csv
+a summary including sample size (patients with expression and response data), number of selected signatures and number of missing signatures in the training set
 
