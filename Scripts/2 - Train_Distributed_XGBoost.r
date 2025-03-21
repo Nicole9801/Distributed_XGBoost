@@ -36,7 +36,7 @@ hyperparam_grid <- expand.grid(
 # function to train xgboost with grid search, save the best model, hyperparameters and training metrics in RDA file
 
 train_xgboost_model <- function(file_path) {
-
+  set.seed(42)
   sparkR.session(
     master = "local[*]",
     sparkConfig = list(spark.driver.memory = "4g")
@@ -182,3 +182,17 @@ print(sapply(results, function(x) x$training_start_time))
 print(paste0("Parallel training start ", global_start_time , " end at ", global_end_time, " time taken ", total_time, " seconds"))
 
 sparkR.session.stop()
+
+local_model_files <- list.files(path = model_out_dir, pattern = "XGB_train_set.*\\.rds", full.names = TRUE)
+
+for (file in local_model_files) {
+    model <- readRDS(file)
+    model <- xgb.Booster.complete(model)
+    model_json <- xgb.save.raw(model, raw_format = "json")
+    
+    json_file <- file.path("Local_model/Local_model_json/", paste0(tools::file_path_sans_ext(basename(file)), ".json"))
+    write(rawToChar(model_json), json_file)
+    
+    message("Converted ", file, " to ", json_file)
+}
+
