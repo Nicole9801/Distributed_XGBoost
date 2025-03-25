@@ -18,7 +18,7 @@ Code scripts for
 
 1 - creating training set 
 
-2 - traing model with distributed ML
+2 - Train_Distributed_XGBoost.r : traing model with distributed ML
 
 3 - Aggregate models into global model (.py)
 
@@ -30,6 +30,9 @@ stores trained xgboost model for each study
 ### Global_model/
 stores aggregated model in different formats
 
+### Validation/
+Saves the raw test dataset, signature scores and result figures 
+
 ### common_feature.txt
 53 signatures that are shared among 11 dataset
 
@@ -38,4 +41,25 @@ stores aggregated model in different formats
 
 ### training_set_summary.csv
 a summary including sample size (patients with expression and response data), number of selected signatures and number of missing signatures in the training set
+
+## To Run Distributed Training
+First, download spark-3.2.1-bin-hadoop3.2.tgz from the Apache Spark Archive: https://archive.apache.org/dist/spark/spark-3.2.1/
+and install it on your local path. 
+
+In scripts/2-Train_Distributed_XGBoost.r, modify the path of Spark to the file path on your local computer: 
+
+`Sys.setenv(SPARK_HOME = "/Users/nicole/spark/spark-3.2.1-bin-hadoop3.2/")`
+
+`.libPaths(c(file.path(Sys.getenv("SPARK_HOME"), "R", "lib"), .libPaths()))`
+
+Then in your R script: 
+
+`install.packages("SparkR")`
+
+This pipeline uses:
+
+R version 4.4.1 
+Python version 3.8.19
+
+
 
