@@ -41,6 +41,8 @@ for (file in file_list) {
     signature <- dat$signature
     signature_info <- dat$sig.info
     geneSig.score <- compute_gene_signature_scores(expr, signature, signature_info, study.icb)
+
+    ## COMMENT: selected_signature hasn't loaded or defined. 
     trainVar <- geneSig.score[rownames(geneSig.score) %in% selected_signature, , drop = FALSE]
 
     # Add patient response data 
