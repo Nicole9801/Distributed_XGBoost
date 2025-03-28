@@ -11,10 +11,13 @@ library(readr)
 
 source("Scripts/Compute_GeneSigScore.r")
 
-data.path <- "data/"
+
+data.path <- "data/new_data/"
 file_list <- list.files(path = data.path, pattern = "\\.rda$", full.names = TRUE)
 dir_out <- "Training_set/"
+selected_signatures <- scan("selected_signatures.txt", what = character(), sep = "\n")
 
+load(file_list[[2]])
 
 Prefiltered_TrainSet <- list()
 study.icb <- list()
@@ -41,7 +44,7 @@ for (file in file_list) {
     signature <- dat$signature
     signature_info <- dat$sig.info
     geneSig.score <- compute_gene_signature_scores(expr, signature, signature_info, study.icb)
-    trainVar <- geneSig.score[rownames(geneSig.score) %in% selected_signature, , drop = FALSE]
+    trainVar <- geneSig.score[rownames(geneSig.score) %in% selected_signatures, , drop = FALSE]
 
     # Add patient response data 
     trainClin <- patient_response
@@ -85,3 +88,4 @@ all_colnames <- lapply(train_set, function(file) {
   num_col = ncol(data)
   column_names = colnames(data)
 })
+
